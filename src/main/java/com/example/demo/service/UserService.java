@@ -1,15 +1,12 @@
-package com.example.finance.service;
+package com.example.demo.service;
 
-import com.example.finance.entity.User;
-
-import java.util.List;
-import java.util.Optional;
+import com.example.demo.model.User;
 
 public interface UserService {
 
-    User saveUser(User user);
+    User register(String name, String email, String password);
 
-    Optional<User> getUserById(Long id);
+    User login(String email, String rawPassword);
 
-    List<User> getAllUsers();
+    User getByEmail(String email);
 }
