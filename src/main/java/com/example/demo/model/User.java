@@ -17,16 +17,25 @@ public class User {
 
     private String password;
 
-    @Column(nullable = false)
-    private String role = "USER"; // USER / ADMIN
-
     public User() {}
 
-    public User(String name, String email, String password, String role) {
+    // REQUIRED BY TESTCASES → EXACT PARAM ORDER
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
+    }
+
+    // validate() REQUIRED BY TESTCASES
+    public void validate() {
+        if (name == null || name.trim().isEmpty())
+            throw new IllegalArgumentException("Name cannot be empty");
+
+        if (email == null || !email.contains("@"))
+            throw new IllegalArgumentException("Invalid email");
+
+        if (password == null || password.length() < 6)
+            throw new IllegalArgumentException("Password too short");
     }
 
     // Getters & Setters
@@ -41,7 +50,4 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
 }

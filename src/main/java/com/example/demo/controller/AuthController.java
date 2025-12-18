@@ -1,44 +1,36 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final JwtTokenProvider jwt;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public AuthController(UserService userService, JwtTokenProvider jwt) {
+        this.userService = userService;
+        this.jwt = jwt;
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-
-        User user = userService.register(req.getName(), req.getEmail(), req.getPassword());
-
-        String token = jwtTokenProvider.generateToken(user);
-
-        return ResponseEntity.ok(new AuthResponse(token));
+    public ResponseEntity<User> register(@RequestBody RegisterRequest req) {
+        User user = userService.registerUser(req);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-
-        User user = userService.login(req.getEmail(), req.getPassword());
-
-        String token = jwtTokenProvider.generateToken(user);
-
-        return ResponseEntity.ok(new AuthResponse(token));
+    public ResponseEntity<String> login(@RequestBody LoginRequest req) {
+        User user = userService.loginUser(req);
+        String token = jwt.generateToken(user);
+        return ResponseEntity.ok(token);
     }
 }
