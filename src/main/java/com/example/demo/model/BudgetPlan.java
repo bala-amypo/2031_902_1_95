@@ -1,11 +1,17 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+
 @Entity
-@Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_id","month","year"})
-})
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "month", "year"})
+    }
+)
 public class BudgetPlan {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -16,4 +22,55 @@ public class BudgetPlan {
 
     private Double incomeTarget;
     private Double expenseLimit;
+
+    public BudgetPlan() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Double getIncomeTarget() {
+        return incomeTarget;
+    }
+
+    public void setIncomeTarget(Double incomeTarget) {
+        this.incomeTarget = incomeTarget;
+    }
+
+    public Double getExpenseLimit() {
+        return expenseLimit;
+    }
+
+    public void setExpenseLimit(Double expenseLimit) {
+        this.expenseLimit = expenseLimit;
+    }
 }
