@@ -2,11 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.TransactionLog;
 import com.example.demo.model.User;
-import com.example.demo.model.Category;
-
 import com.example.demo.service.TransactionService;
 import com.example.demo.service.UserService;
-import com.example.demo.repository.CategoryRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
@@ -26,14 +22,12 @@ public class TransactionController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private CategoryRepository categoryRepo;
-
+    // FIXED getCurrentUser() — this is the correct version
     private User getCurrentUser() {
-        String email = (String) SecurityContextHolder
+        String email = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
-                .getPrincipal();
+                .getName();   // << correct method
 
         return userService.getByEmail(email);
     }
@@ -43,7 +37,6 @@ public class TransactionController {
 
         User user = getCurrentUser();
 
-        // category should come as nested object → extract ID
         Long categoryId = body.getCategory().getId();
 
         TransactionLog tx = txService.createTransaction(
