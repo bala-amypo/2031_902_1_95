@@ -36,6 +36,7 @@ public class BudgetPlanServiceImpl implements BudgetPlanService {
             throw new BadRequestException("Targets must be >= 0");
         }
 
+        // Check existing plan
         BudgetPlan existing = planRepo.findByUserAndMonthAndYear(user, month, year);
 
         if (existing != null) {
@@ -43,7 +44,6 @@ public class BudgetPlanServiceImpl implements BudgetPlanService {
         }
 
         BudgetPlan plan = new BudgetPlan(user, month, year, incomeTarget, expenseLimit);
-
         return planRepo.save(plan);
     }
 
