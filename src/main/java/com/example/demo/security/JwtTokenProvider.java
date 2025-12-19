@@ -5,13 +5,12 @@ import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Base64;
 
 @Component
 public class JwtTokenProvider {
 
-    // Base64 encoded secret key
-    private final String SECRET = Base64.getEncoder().encodeToString("MY_SECRET_KEY_12345".getBytes());
+    // 256-bit (32-byte) secure key
+    private final String SECRET = "f03aba6f0f9b4eeaa1d6d1e363d442d9a2b44a23f8e2b08587c998a773bc2f78";
 
     private final long EXPIRATION = 1000 * 60 * 60 * 10; // 10 hours
 
