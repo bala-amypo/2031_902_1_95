@@ -21,7 +21,7 @@ public class Category {
 
     public Category(String name, String type) {
         this.name = name;
-        this.type = type;
+        this.type = type.toUpperCase();
         validateType();
     }
 
@@ -31,7 +31,6 @@ public class Category {
         }
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
 
     public String getName() { return name; }
@@ -39,7 +38,7 @@ public class Category {
 
     public String getType() { return type; }
     public void setType(String type) {
-        this.type = type;
+        this.type = type.toUpperCase();
         validateType();
     }
 }
