@@ -1,61 +1,34 @@
-package com.example.demo.service.impl;
+@Override
+public BudgetPlan getById(Long id) {
+    return planRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Budget plan not found"));
+}
 
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ConflictException;
-import com.example.demo.exception.ResourceNotFoundException;
+@Override
+public List<BudgetPlan> getAllByUser(User user) {
+    return planRepo.findAll()
+            .stream()
+            .filter(plan -> plan.getUser().getId().equals(user.getId()))
+            .toList();
+}
 
-import com.example.demo.model.BudgetPlan;
-import com.example.demo.model.User;
+@Override
+public BudgetPlan updatePlan(Long id, Double incomeTarget, Double expenseLimit) {
 
-import com.example.demo.repository.BudgetPlanRepository;
-import com.example.demo.service.BudgetPlanService;
+    BudgetPlan plan = getById(id);
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-@Service
-public class BudgetPlanServiceImpl implements BudgetPlanService {
-
-    @Autowired
-    private BudgetPlanRepository planRepo;
-
-    @Override
-    public BudgetPlan createPlan(
-            User user,
-            Integer month,
-            Integer year,
-            Double incomeTarget,
-            Double expenseLimit
-    ) {
-
-        if (month < 1 || month > 12) {
-            throw new BadRequestException("Invalid month");
-        }
-
-        if (incomeTarget < 0 || expenseLimit < 0) {
-            throw new BadRequestException("Targets must be >= 0");
-        }
-
-        // Check existing plan
-        BudgetPlan existing = planRepo.findByUserAndMonthAndYear(user, month, year);
-
-        if (existing != null) {
-            throw new ConflictException("Budget plan already exists for this month");
-        }
-
-        BudgetPlan plan = new BudgetPlan(user, month, year, incomeTarget, expenseLimit);
-        return planRepo.save(plan);
+    if (incomeTarget < 0 || expenseLimit < 0) {
+        throw new BadRequestException("Targets must be >= 0");
     }
 
-    @Override
-    public BudgetPlan getPlan(User user, Integer month, Integer year) {
+    plan.setIncomeTarget(incomeTarget);
+    plan.setExpenseLimit(expenseLimit);
 
-        BudgetPlan plan = planRepo.findByUserAndMonthAndYear(user, month, year);
+    return planRepo.save(plan);
+}
 
-        if (plan == null) {
-            throw new ResourceNotFoundException("Budget plan not found");
-        }
-
-        return plan;
-    }
+@Override
+public void deletePlan(Long id) {
+    BudgetPlan plan = getById(id);
+    planRepo.delete(plan);
 }

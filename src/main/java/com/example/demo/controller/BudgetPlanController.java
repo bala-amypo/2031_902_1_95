@@ -8,7 +8,6 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,24 +21,12 @@ public class BudgetPlanController {
     private UserService userService;
 
     private User getUser() {
-
-        Object principal = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        String email;
-
-        if (principal instanceof UserDetails userDetails) {
-            email = userDetails.getUsername();  // returns email
-        } else {
-            email = principal.toString();
-        }
-
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.getByEmail(email);
     }
 
     @PostMapping
-    public ResponseEntity<?> createPlan(@RequestBody BudgetPlan body) {
+    public ResponseEntity<?> create(@RequestBody BudgetPlan body) {
 
         User user = getUser();
 
@@ -60,5 +47,39 @@ public class BudgetPlanController {
             @RequestParam Integer year
     ) {
         return ResponseEntity.ok(planService.getPlan(getUser(), month, year));
+    }
+
+    // --- CRUD OPERATION ADDED: GET ALL ---
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(planService.getAllByUser(getUser()));
+    }
+
+    // --- CRUD OPERATION ADDED: GET BY ID ---
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(planService.getById(id));
+    }
+
+    // --- CRUD OPERATION ADDED: UPDATE ---
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @RequestBody BudgetPlan body
+    ) {
+        BudgetPlan updated = planService.updatePlan(
+                id,
+                body.getIncomeTarget(),
+                body.getExpenseLimit()
+        );
+
+        return ResponseEntity.ok(updated);
+    }
+
+    // --- CRUD OPERATION ADDED: DELETE ---
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        planService.deletePlan(id);
+        return ResponseEntity.ok("Budget plan deleted");
     }
 }
