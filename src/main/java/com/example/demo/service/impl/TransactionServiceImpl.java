@@ -72,4 +72,46 @@ public class TransactionServiceImpl implements TransactionService {
 
         return transactionRepo.findByUserAndTransactionDateBetween(user, start, end);
     }
+    // ------------------- CRUD OPERATION ADDED: GET BY ID -------------------
+@Override
+public TransactionLog getById(Long id) {
+    return transactionRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+}
+
+// ------------------- CRUD OPERATION ADDED: UPDATE -------------------
+@Override
+public TransactionLog updateTransaction(
+        Long id,
+        User user,
+        Long categoryId,
+        Double amount,
+        String description,
+        LocalDate date
+) {
+
+    TransactionLog existing = getById(id);
+
+    Category cat = categoryRepo.findById(categoryId)
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+    if (amount <= 0) throw new BadRequestException("Invalid amount");
+    if (date.isAfter(LocalDate.now())) throw new BadRequestException("Future date not allowed");
+
+    existing.setUser(user);
+    existing.setCategory(cat);
+    existing.setAmount(amount);
+    existing.setDescription(description);
+    existing.setTransactionDate(date);
+
+    return transactionRepo.save(existing);
+}
+
+// ------------------- CRUD OPERATION ADDED: DELETE -------------------
+@Override
+public void deleteTransaction(Long id) {
+    TransactionLog tx = getById(id);
+    transactionRepo.delete(tx);
+}
+
 }
