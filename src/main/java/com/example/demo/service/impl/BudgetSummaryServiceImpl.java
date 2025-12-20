@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ConflictException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ConflictException;
 
 import com.example.demo.model.*;
 import com.example.demo.repository.BudgetPlanRepository;
@@ -9,6 +9,7 @@ import com.example.demo.repository.BudgetSummaryRepository;
 import com.example.demo.repository.TransactionLogRepository;
 
 import com.example.demo.service.BudgetSummaryService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,19 +31,16 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
     @Override
     public BudgetSummary generateMonthlySummary(User user, Integer month, Integer year) {
 
-        // Get BudgetPlan
         BudgetPlan plan = planRepo.findByUserAndMonthAndYear(user, month, year);
 
         if (plan == null) {
             throw new ResourceNotFoundException("Budget plan not found");
         }
 
-        // Enforce 1 summary per plan
         if (summaryRepo.findByBudgetPlan(plan) != null) {
             throw new ConflictException("Summary already generated");
         }
 
-        // Fetch all transactions for the month
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 
@@ -60,7 +58,6 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
             }
         }
 
-        // Create summary
         BudgetSummary summary = new BudgetSummary(
                 plan,
                 totalIncome,
@@ -74,5 +71,33 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
     public BudgetSummary getSummary(Long id) {
         return summaryRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Summary not found"));
+    }
+
+    // ---------------------------
+    // NEW CRUD METHODS
+    // ---------------------------
+
+    @Override
+    public List<BudgetSummary> getAll() {
+        return summaryRepo.findAll();
+    }
+
+    @Override
+    public BudgetSummary update(Long id, BudgetSummary newData) {
+
+        BudgetSummary existing = getSummary(id);
+
+        // Update only allowed fields
+        existing.setTotalIncome(newData.getTotalIncome());
+        existing.setTotalExpense(newData.getTotalExpense());
+        existing.setStatus(newData.getStatus());
+
+        return summaryRepo.save(existing);
+    }
+
+    @Override
+    public void delete(Long id) {
+        BudgetSummary existing = getSummary(id);
+        summaryRepo.delete(existing);
     }
 }

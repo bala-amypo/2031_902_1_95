@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/budget-summary")
 public class BudgetSummaryController {
@@ -31,7 +33,7 @@ public class BudgetSummaryController {
         String email;
 
         if (principal instanceof UserDetails userDetails) {
-            email = userDetails.getUsername();  // returns email
+            email = userDetails.getUsername(); 
         } else {
             email = principal.toString();
         }
@@ -39,6 +41,9 @@ public class BudgetSummaryController {
         return userService.getByEmail(email);
     }
 
+    // ------------------------------------------------------
+    // CREATE SUMMARY (Existing)
+    // ------------------------------------------------------
     @PostMapping
     public ResponseEntity<?> generate(
             @RequestParam Integer month,
@@ -48,8 +53,39 @@ public class BudgetSummaryController {
         return ResponseEntity.ok(summary);
     }
 
+    // ------------------------------------------------------
+    // READ SUMMARY BY ID (Existing)
+    // ------------------------------------------------------
     @GetMapping("/{id}")
     public ResponseEntity<?> getSummary(@PathVariable Long id) {
         return ResponseEntity.ok(summaryService.getSummary(id));
+    }
+
+    // ------------------------------------------------------
+    // READ ALL SUMMARIES (NEW)
+    // ------------------------------------------------------
+    @GetMapping
+    public ResponseEntity<List<BudgetSummary>> getAllSummaries() {
+        return ResponseEntity.ok(summaryService.getAll());
+    }
+
+    // ------------------------------------------------------
+    // UPDATE SUMMARY (NEW)
+    // ------------------------------------------------------
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateSummary(
+            @PathVariable Long id,
+            @RequestBody BudgetSummary body
+    ) {
+        return ResponseEntity.ok(summaryService.update(id, body));
+    }
+
+    // ------------------------------------------------------
+    // DELETE SUMMARY (NEW)
+    // ------------------------------------------------------
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteSummary(@PathVariable Long id) {
+        summaryService.delete(id);
+        return ResponseEntity.ok("Budget summary deleted successfully");
     }
 }
