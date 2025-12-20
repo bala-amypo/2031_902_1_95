@@ -27,3 +27,52 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAll());
     }
 }
+
+
+
+
+@RestController
+@RequestMapping("/categories")
+public class CategoryController {
+
+    @Autowired
+    private CategoryService categoryService;
+
+    // CREATE
+    @PostMapping
+    public ResponseEntity<Category> create(@RequestBody Category body) {
+        return ResponseEntity.ok(
+                categoryService.createCategory(body.getName(), body.getType())
+        );
+    }
+
+    // READ ALL
+    @GetMapping
+    public ResponseEntity<List<Category>> getAll() {
+        return ResponseEntity.ok(categoryService.getAll());
+    }
+
+    // READ ONE
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getById(id));
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> update(
+            @PathVariable Long id,
+            @RequestBody Category body
+    ) {
+        return ResponseEntity.ok(
+                categoryService.updateCategory(id, body.getName(), body.getType())
+        );
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok("Deleted Successfully");
+    }
+}

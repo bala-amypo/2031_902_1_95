@@ -39,4 +39,28 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
+    
+    //crud operations
+     @Override
+    public Category updateCategory(Long id, String name, String type) {
+
+        Category c = getById(id);
+
+        if (!c.getName().equals(name) && categoryRepo.existsByName(name)) {
+            throw new ConflictException("Category name already exists");
+        }
+
+        c.setName(name);
+        c.setType(type);
+
+        return categoryRepo.save(c);
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        Category c = getById(id);
+        categoryRepo.delete(c);
+    }
 }
+
+

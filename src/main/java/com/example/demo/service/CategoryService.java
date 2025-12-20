@@ -10,18 +10,11 @@ public interface CategoryService {
     List<Category> getAll();
 
     Category getById(Long id);
-}
 
-
-public interface CategoryService {
-
-    Category createCategory(String name, String type);
-
-    List<Category> getAll();
-
-    Category getById(Long id);
-
+    //crud operations
     Category updateCategory(Long id, String name, String type);
 
     void deleteCategory(Long id);
 }
+
+
