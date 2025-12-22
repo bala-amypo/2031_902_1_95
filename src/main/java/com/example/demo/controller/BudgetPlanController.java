@@ -49,19 +49,19 @@ public class BudgetPlanController {
         return ResponseEntity.ok(planService.getPlan(getUser(), month, year));
     }
 
-    // --- CRUD OPERATION ADDED: GET ALL ---
+    //GET ALL
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(planService.getAllByUser(getUser()));
     }
 
-    // --- CRUD OPERATION ADDED: GET BY ID ---
+    // GET BY ID 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(planService.getById(id));
     }
 
-    // --- CRUD OPERATION ADDED: UPDATE ---
+    //UPDATE ---
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
