@@ -21,9 +21,11 @@ public class TransactionController {
 
     @Autowired
     private UserService userService;
+
     private User getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.getByEmail(email);
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody TransactionLog body) {
@@ -42,12 +44,10 @@ public class TransactionController {
         return ResponseEntity.ok(tx);
     }
 
-
     @GetMapping
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(txService.getAllByUser(getCurrentUser()));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
