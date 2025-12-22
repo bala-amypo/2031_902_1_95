@@ -16,20 +16,12 @@ public interface BudgetPlanService {
     );
 
     BudgetPlan getPlan(User user, Integer month, Integer year);
-
-    // --- CRUD OPERATION ADDED ---
     BudgetPlan getById(Long id);
-
-    // --- CRUD OPERATION ADDED ---
     List<BudgetPlan> getAllByUser(User user);
-
-    // --- CRUD OPERATION ADDED ---
     BudgetPlan updatePlan(
             Long id,
             Double incomeTarget,
             Double expenseLimit
     );
-
-    // --- CRUD OPERATION ADDED ---
     void deletePlan(Long id);
 }

@@ -11,7 +11,6 @@ public interface CategoryService {
 
     Category getById(Long id);
 
-    //crud operations
     Category updateCategory(Long id, String name, String type);
 
     void deleteCategory(Long id);

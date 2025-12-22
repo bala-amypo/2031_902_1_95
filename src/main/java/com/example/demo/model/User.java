@@ -18,7 +18,7 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private String role = "USER"; // USER / ADMIN
+    private String role = "USER"; 
 
     public User() {}
 
@@ -29,7 +29,6 @@ public class User {
         this.role = role;
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -37,7 +37,6 @@ public class TransactionLog {
         this.transactionDate = date;
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
 
     public User getUser() { return user; }

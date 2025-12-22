@@ -11,7 +11,6 @@ public interface BudgetSummaryService {
 
     BudgetSummary getSummary(Long id);
 
-    // NEW CRUD METHODS
     List<BudgetSummary> getAll();
 
     BudgetSummary update(Long id, BudgetSummary newData);
