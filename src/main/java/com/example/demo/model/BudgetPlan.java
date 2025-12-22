@@ -17,7 +17,7 @@ public class BudgetPlan {
     @ManyToOne(optional = false)
     private User user;
 
-    private Integer month;        // 1–12
+    private Integer month;      
     private Integer year;
     private Double incomeTarget;
     private Double expenseLimit;
@@ -38,7 +38,6 @@ public class BudgetPlan {
         this.expenseLimit = expenseLimit;
     }
 
-    // ---------- Getters ----------
     public Long getId() { return id; }
     public User getUser() { return user; }
     public Integer getMonth() { return month; }
@@ -46,7 +45,6 @@ public class BudgetPlan {
     public Double getIncomeTarget() { return incomeTarget; }
     public Double getExpenseLimit() { return expenseLimit; }
 
-    // ---------- Setters (REQUIRED for Swagger) ----------
     public void setUser(User user) { this.user = user; }
 
     public void setMonth(Integer month) { this.month = month; }

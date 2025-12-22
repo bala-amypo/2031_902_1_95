@@ -15,7 +15,7 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
-    private String type; // INCOME / EXPENSE
+    private String type; 
 
     public Category() {}
 

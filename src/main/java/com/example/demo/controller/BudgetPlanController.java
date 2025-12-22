@@ -61,7 +61,7 @@ public class BudgetPlanController {
         return ResponseEntity.ok(planService.getById(id));
     }
 
-    //UPDATE ---
+    //UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
@@ -76,7 +76,7 @@ public class BudgetPlanController {
         return ResponseEntity.ok(updated);
     }
 
-    // --- CRUD OPERATION ADDED: DELETE ---
+    //DELETE 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         planService.deletePlan(id);

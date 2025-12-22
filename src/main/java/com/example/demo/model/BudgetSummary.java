@@ -18,7 +18,7 @@ public class BudgetSummary {
 
     private Double totalExpense;
 
-    private String status; // UNDER_LIMIT / OVER_LIMIT
+    private String status; 
 
     private LocalDateTime generatedAt;
 
@@ -36,7 +36,7 @@ public class BudgetSummary {
         this.generatedAt = LocalDateTime.now();
     }
 
-    // Getters
+
     public Long getId() { return id; }
     public BudgetPlan getBudgetPlan() { return budgetPlan; }
     public Double getTotalIncome() { return totalIncome; }

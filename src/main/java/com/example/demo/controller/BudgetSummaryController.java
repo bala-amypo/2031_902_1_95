@@ -41,9 +41,8 @@ public class BudgetSummaryController {
         return userService.getByEmail(email);
     }
 
-    // ------------------------------------------------------
-    // CREATE SUMMARY (Existing)
-    // ------------------------------------------------------
+
+    // CREATE SUMMARY
     @PostMapping
     public ResponseEntity<?> generate(
             @RequestParam Integer month,
@@ -53,25 +52,18 @@ public class BudgetSummaryController {
         return ResponseEntity.ok(summary);
     }
 
-    // ------------------------------------------------------
-    // READ SUMMARY BY ID (Existing)
-    // ------------------------------------------------------
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getSummary(@PathVariable Long id) {
         return ResponseEntity.ok(summaryService.getSummary(id));
     }
 
-    // ------------------------------------------------------
-    // READ ALL SUMMARIES (NEW)
-    // ------------------------------------------------------
     @GetMapping
     public ResponseEntity<List<BudgetSummary>> getAllSummaries() {
         return ResponseEntity.ok(summaryService.getAll());
     }
 
-    // ------------------------------------------------------
-    // UPDATE SUMMARY (NEW)
-    // ------------------------------------------------------
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateSummary(
             @PathVariable Long id,
@@ -80,9 +72,7 @@ public class BudgetSummaryController {
         return ResponseEntity.ok(summaryService.update(id, body));
     }
 
-    // ------------------------------------------------------
-    // DELETE SUMMARY (NEW)
-    // ------------------------------------------------------
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSummary(@PathVariable Long id) {
         summaryService.delete(id);
