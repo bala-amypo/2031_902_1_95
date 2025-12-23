@@ -22,7 +22,7 @@ public class OpenApiConfig {
                         .version("1.0")
                         .description("API documentation for Expense Tracker"))
                 .servers(List.of(
-                        new Server().url("https://9516.pro604cr.amypo.ai/")
+                        new Server().url("https://9046.408procr.amypo.ai/")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
