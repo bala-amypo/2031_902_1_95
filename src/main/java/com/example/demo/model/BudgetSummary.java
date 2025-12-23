@@ -1,12 +1,10 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
 @Entity
 public class BudgetSummary {
-
-    public static final String STATUS_UNDER_LIMIT = "UNDER_LIMIT";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,33 +14,82 @@ public class BudgetSummary {
     private BudgetPlan budgetPlan;
 
     private Double totalIncome;
+
     private Double totalExpense;
+
     private String status;
+
     private LocalDateTime generatedAt;
 
+    public BudgetSummary() {
+    }
+
+    public BudgetSummary(Long id,
+                         BudgetPlan budgetPlan,
+                         double totalIncome,
+                         double totalExpense,
+                         String status,
+                         LocalDateTime generatedAt) {
+        this.id = id;
+        this.budgetPlan = budgetPlan;
+        this.totalIncome = totalIncome;
+        this.totalExpense = totalExpense;
+        this.status = status;
+        this.generatedAt = generatedAt;
+    }
+
     @PrePersist
-    public void onCreate() {
-        generatedAt = LocalDateTime.now();
-        if (status == null) {
-            status = STATUS_UNDER_LIMIT;
+    public void prePersist() {
+        if (generatedAt == null) {
+            generatedAt = LocalDateTime.now();
         }
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public BudgetPlan getBudgetPlan() { return budgetPlan; }
-    public void setBudgetPlan(BudgetPlan budgetPlan) { this.budgetPlan = budgetPlan; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Double getTotalIncome() { return totalIncome; }
-    public void setTotalIncome(Double totalIncome) { this.totalIncome = totalIncome; }
+    public BudgetPlan getBudgetPlan() {
+        return budgetPlan;
+    }
 
-    public Double getTotalExpense() { return totalExpense; }
-    public void setTotalExpense(Double totalExpense) { this.totalExpense = totalExpense; }
+    public void setBudgetPlan(BudgetPlan budgetPlan) {
+        this.budgetPlan = budgetPlan;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Double getTotalIncome() {
+        return totalIncome;
+    }
 
-    public LocalDateTime getGeneratedAt() { return generatedAt; }
-    public void setGeneratedAt(LocalDateTime generatedAt) { this.generatedAt = generatedAt; }
+    public void setTotalIncome(Double totalIncome) {
+        this.totalIncome = totalIncome;
+    }
+
+    public Double getTotalExpense() {
+        return totalExpense;
+    }
+
+    public void setTotalExpense(Double totalExpense) {
+        this.totalExpense = totalExpense;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getGeneratedAt() {
+        return generatedAt;
+    }
+
+    public void setGeneratedAt(LocalDateTime generatedAt) {
+        this.generatedAt = generatedAt;
+    }
 }
