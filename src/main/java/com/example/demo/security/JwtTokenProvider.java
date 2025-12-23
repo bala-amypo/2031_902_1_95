@@ -3,6 +3,7 @@ package com.example.demo.security;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -21,19 +22,16 @@ public class JwtTokenProvider {
     private final Key key;
     private final long validity;
 
-    // ✅ REQUIRED by Spring + filter
     public JwtTokenProvider() {
         this.key = Keys.hmacShaKeyFor(DEFAULT_SECRET.getBytes());
         this.validity = DEFAULT_VALIDITY;
     }
 
-    // ✅ REQUIRED by testcase
     public JwtTokenProvider(String secret, long validity) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.validity = validity;
     }
 
-    // ✅ REQUIRED by testcase
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
@@ -45,7 +43,16 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // ✅ REQUIRED by filter
+    // ✅ REQUIRED BY TESTCASE
+    public String generateToken(
+            Authentication authentication,
+            long userId,
+            String email,
+            String role
+    ) {
+        return generateToken(userId, email, role);
+    }
+
     public boolean validateToken(String token) {
         try {
             getClaims(token);
@@ -55,22 +62,18 @@ public class JwtTokenProvider {
         }
     }
 
-    // ✅ REQUIRED by filter
     public String getEmail(String token) {
         return getClaims(token).getSubject();
     }
 
-    // ✅ REQUIRED by testcase
     public Long getUserIdFromToken(String token) {
         return getClaims(token).get("userId", Long.class);
     }
 
-    // ✅ REQUIRED by testcase
     public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
-    // ✅ REQUIRED by testcase
     public String getRoleFromToken(String token) {
         return getClaims(token).get("role", String.class);
     }
