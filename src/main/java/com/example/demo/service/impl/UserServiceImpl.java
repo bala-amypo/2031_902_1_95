@@ -1,68 +1,36 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
+import java.util.Optional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ConflictException;
-import com.example.demo.exception.ResourceNotFoundException;
-
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.UserService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepo;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Override
-    public User register(String name, String email, String password) {
-
-        if (userRepo.findByEmail(email) != null) {
-            throw new ConflictException("Email already exists");
-        }
-
-        User user = new User(
-                name,
-                email,
-                passwordEncoder.encode(password),
-                "USER"
-        );
-
-        return userRepo.save(user);
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public User login(String email, String rawPassword) {
-
-        User user = userRepo.findByEmail(email);
-
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found");
+    public User register(User user) {
+        Optional<User> existing = userRepository.findByEmail(user.getEmail());
+        if (existing.isPresent()) {
+            throw new BadRequestException("Email already exists");
         }
-
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new BadRequestException("Invalid password");
-        }
-
-        return user;
+        user.setPassword(encoder.encode(user.getPassword()));
+        user.setRole("USER");
+        return userRepository.save(user);
     }
 
     @Override
-    public User getByEmail(String email) {
-
-        User user = userRepo.findByEmail(email);
-
-        if (user == null) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        return user;
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
 }

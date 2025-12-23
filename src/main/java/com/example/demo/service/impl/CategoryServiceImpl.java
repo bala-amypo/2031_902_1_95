@@ -1,66 +1,30 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.exception.ConflictException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Category;
-import com.example.demo.repository.CategoryRepository;
-import com.example.demo.service.CategoryService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.example.demo.service;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.model.Category;
+import com.example.demo.repository.CategoryRepository;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepo;
+    private final CategoryRepository categoryRepository;
+
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
-    public Category createCategory(String name, String type) {
-
-        if (categoryRepo.existsByName(name)) {
-            throw new ConflictException("Category already exists");
+    public Category addCategory(Category category) {
+        if (categoryRepository.existsByName(category.getName())) {
+            throw new BadRequestException("Category already exists");
         }
-
-        Category category = new Category(name, type);
-
-        return categoryRepo.save(category);
+        return categoryRepository.save(category);
     }
 
     @Override
-    public List<Category> getAll() {
-        return categoryRepo.findAll();
-    }
-
-    @Override
-    public Category getById(Long id) {
-        return categoryRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-    }
-    
-    //crud operations
-     @Override
-    public Category updateCategory(Long id, String name, String type) {
-
-        Category c = getById(id);
-
-        if (!c.getName().equals(name) && categoryRepo.existsByName(name)) {
-            throw new ConflictException("Category name already exists");
-        }
-
-        c.setName(name);
-        c.setType(type);
-
-        return categoryRepo.save(c);
-    }
-
-    @Override
-    public void deleteCategory(Long id) {
-        Category c = getById(id);
-        categoryRepo.delete(c);
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 }
-
-

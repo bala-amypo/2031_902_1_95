@@ -1,117 +1,52 @@
-package com.example.demo.service.impl;
-
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-
-import com.example.demo.model.Category;
-import com.example.demo.model.TransactionLog;
-import com.example.demo.model.User;
-
-import com.example.demo.repository.CategoryRepository;
-import com.example.demo.repository.TransactionLogRepository;
-
-import com.example.demo.service.TransactionService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package com.example.demo.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.model.TransactionLog;
+import com.example.demo.model.User;
+import com.example.demo.repository.TransactionLogRepository;
+import com.example.demo.repository.UserRepository;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    @Autowired
-    private TransactionLogRepository transactionRepo;
+    private final TransactionLogRepository transactionRepo;
+    private final UserRepository userRepo;
 
-    @Autowired
-    private CategoryRepository categoryRepo;
+    public TransactionServiceImpl(TransactionLogRepository transactionRepo,
+                                  UserRepository userRepo) {
+        this.transactionRepo = transactionRepo;
+        this.userRepo = userRepo;
+    }
 
     @Override
-    public TransactionLog createTransaction(
-            User user,
-            Long categoryId,
-            Double amount,
-            String description,
-            LocalDate date
-    ) {
+    public TransactionLog addTransaction(Long userId, TransactionLog log) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
-        if (amount == null || amount <= 0) {
-            throw new BadRequestException("Amount must be > 0");
+        if (log.getAmount() <= 0) {
+            throw new BadRequestException("Invalid amount");
         }
 
-        if (date.isAfter(LocalDate.now())) {
+        if (log.getTransactionDate().isAfter(LocalDate.now())) {
             throw new BadRequestException("Future date not allowed");
         }
 
-        Category cat = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        log.setUser(user);
+        return transactionRepo.save(log);
+    }
 
-        TransactionLog tx = new TransactionLog(
+    @Override
+    public List<TransactionLog> getUserTransactions(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        return transactionRepo.findByUserAndTransactionDateBetween(
                 user,
-                cat,
-                amount,
-                description,
-                date
+                LocalDate.of(1900, 1, 1),
+                LocalDate.now()
         );
-
-        return transactionRepo.save(tx);
     }
-
-    @Override
-    public List<TransactionLog> getAllByUser(User user) {
-        return transactionRepo.findByUser(user);
-    }
-
-    @Override
-    public List<TransactionLog> getByDateRange(User user, LocalDate start, LocalDate end) {
-
-        if (start.isAfter(end)) {
-            throw new BadRequestException("Start date cannot be after end date");
-        }
-
-        return transactionRepo.findByUserAndTransactionDateBetween(user, start, end);
-    }
-    // ------------------- CRUD OPERATION ADDED: GET BY ID -------------------
-@Override
-public TransactionLog getById(Long id) {
-    return transactionRepo.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
-}
-
-// ------------------- CRUD OPERATION ADDED: UPDATE -------------------
-@Override
-public TransactionLog updateTransaction(
-        Long id,
-        User user,
-        Long categoryId,
-        Double amount,
-        String description,
-        LocalDate date
-) {
-
-    TransactionLog existing = getById(id);
-
-    Category cat = categoryRepo.findById(categoryId)
-            .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-
-    if (amount <= 0) throw new BadRequestException("Invalid amount");
-    if (date.isAfter(LocalDate.now())) throw new BadRequestException("Future date not allowed");
-
-    existing.setUser(user);
-    existing.setCategory(cat);
-    existing.setAmount(amount);
-    existing.setDescription(description);
-    existing.setTransactionDate(date);
-
-    return transactionRepo.save(existing);
-}
-
-// ------------------- CRUD OPERATION ADDED: DELETE -------------------
-@Override
-public void deleteTransaction(Long id) {
-    TransactionLog tx = getById(id);
-    transactionRepo.delete(tx);
-}
-
 }
