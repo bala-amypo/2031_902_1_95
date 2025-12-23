@@ -2,47 +2,40 @@ package com.example.demo.security;
 
 import java.security.Key;
 import java.util.Date;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class JwtTokenProvider {
 
-    private static final String SECRET =
-            "my-super-secret-key-my-super-secret-key"; // min 32 chars
+    private final Key key;
+    private final long validity;
 
-    private static final long VALIDITY = 86400000;
-
-    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    public JwtTokenProvider(String secret, long validity) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.validity = validity;
+    }
 
     public String generateToken(Long userId, String email, String role) {
-
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + VALIDITY))
+                .setExpiration(new Date(System.currentTimeMillis() + validity))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String getEmail(String token) {
+    public Long getUserIdFromToken(String token) {
+        return getClaims(token).get("userId", Long.class);
+    }
+
+    public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+    public String getRoleFromToken(String token) {
+        return getClaims(token).get("role", String.class);
     }
 
     private Claims getClaims(String token) {
