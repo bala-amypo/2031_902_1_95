@@ -16,6 +16,12 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+    public UserServiceImpl(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
+    this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
+}
+
 
     @Override
     public User register(User user) {
