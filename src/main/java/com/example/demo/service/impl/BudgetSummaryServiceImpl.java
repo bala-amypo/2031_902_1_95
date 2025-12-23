@@ -48,9 +48,10 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
             }
         }
 
-        String status = expense <= plan.getExpenseLimit()
-                ? "UNDER_LIMIT"
-                : "OVER_LIMIT";
+       String status = expense <= plan.getExpenseLimit()
+        ? BudgetSummary.STATUS_UNDER_LIMIT
+        : BudgetSummary.STATUS_OVER_LIMIT;
+
 
         BudgetSummary summary = new BudgetSummary(
                 null,
