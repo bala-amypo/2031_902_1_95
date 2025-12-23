@@ -3,25 +3,37 @@ package com.example.demo.security;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+@Component
 public class JwtTokenProvider {
+
+    private static final String DEFAULT_SECRET =
+            "my-super-secret-key-my-super-secret-key";
+
+    private static final long DEFAULT_VALIDITY = 86400000;
 
     private final Key key;
     private final long validity;
 
+    // ✅ REQUIRED by Spring + filter
     public JwtTokenProvider() {
-        this("my-secret-key-my-secret-key", 86400000);
+        this.key = Keys.hmacShaKeyFor(DEFAULT_SECRET.getBytes());
+        this.validity = DEFAULT_VALIDITY;
     }
 
+    // ✅ REQUIRED by testcase
     public JwtTokenProvider(String secret, long validity) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.validity = validity;
     }
 
+    // ✅ REQUIRED by testcase
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
@@ -33,14 +45,32 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // ✅ REQUIRED by filter
+    public boolean validateToken(String token) {
+        try {
+            getClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ✅ REQUIRED by filter
+    public String getEmail(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    // ✅ REQUIRED by testcase
     public Long getUserIdFromToken(String token) {
         return getClaims(token).get("userId", Long.class);
     }
 
+    // ✅ REQUIRED by testcase
     public String getEmailFromToken(String token) {
         return getClaims(token).getSubject();
     }
 
+    // ✅ REQUIRED by testcase
     public String getRoleFromToken(String token) {
         return getClaims(token).get("role", String.class);
     }
