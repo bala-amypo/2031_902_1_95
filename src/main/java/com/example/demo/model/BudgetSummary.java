@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 @Entity
 public class BudgetSummary {
 
+    public static final String STATUS_UNDER_LIMIT = "UNDER_LIMIT";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,63 +16,33 @@ public class BudgetSummary {
     private BudgetPlan budgetPlan;
 
     private Double totalIncome;
-
     private Double totalExpense;
-
     private String status;
-
     private LocalDateTime generatedAt;
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         generatedAt = LocalDateTime.now();
+        if (status == null) {
+            status = STATUS_UNDER_LIMIT;
+        }
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public BudgetPlan getBudgetPlan() { return budgetPlan; }
+    public void setBudgetPlan(BudgetPlan budgetPlan) { this.budgetPlan = budgetPlan; }
 
-    public BudgetPlan getBudgetPlan() {
-        return budgetPlan;
-    }
+    public Double getTotalIncome() { return totalIncome; }
+    public void setTotalIncome(Double totalIncome) { this.totalIncome = totalIncome; }
 
-    public void setBudgetPlan(BudgetPlan budgetPlan) {
-        this.budgetPlan = budgetPlan;
-    }
+    public Double getTotalExpense() { return totalExpense; }
+    public void setTotalExpense(Double totalExpense) { this.totalExpense = totalExpense; }
 
-    public Double getTotalIncome() {
-        return totalIncome;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public void setTotalIncome(Double totalIncome) {
-        this.totalIncome = totalIncome;
-    }
-
-    public Double getTotalExpense() {
-        return totalExpense;
-    }
-
-    public void setTotalExpense(Double totalExpense) {
-        this.totalExpense = totalExpense;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getGeneratedAt() {
-        return generatedAt;
-    }
-
-    public void setGeneratedAt(LocalDateTime generatedAt) {
-        this.generatedAt = generatedAt;
-    }
+    public LocalDateTime getGeneratedAt() { return generatedAt; }
+    public void setGeneratedAt(LocalDateTime generatedAt) { this.generatedAt = generatedAt; }
 }

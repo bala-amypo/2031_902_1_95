@@ -22,51 +22,40 @@ public class TransactionLog {
 
     private LocalDate transactionDate;
 
-    public Long getId() {
-        return id;
+    public TransactionLog() {
     }
 
-    public void setId(Long id) {
+    public TransactionLog(Long id, User user, Category category,
+                          double amount, String description, LocalDate date) {
         this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
         this.user = user;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
+        this.transactionDate = date;
     }
 
-    public LocalDate getTransactionDate() {
-        return transactionDate;
+    public void validate() {
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Invalid amount");
+        }
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
-        this.transactionDate = transactionDate;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
+
+    public Double getAmount() { return amount; }
+    public void setAmount(Double amount) { this.amount = amount; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDate getTransactionDate() { return transactionDate; }
+    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
 }

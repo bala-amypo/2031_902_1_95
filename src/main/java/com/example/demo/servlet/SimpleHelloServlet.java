@@ -10,7 +10,7 @@ import java.io.IOException;
 public class SimpleHelloServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+    public void doGet(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
 
         res.setStatus(200);
@@ -25,4 +25,3 @@ public class SimpleHelloServlet extends HttpServlet {
         res.setStatus(405);
     }
 }
-
