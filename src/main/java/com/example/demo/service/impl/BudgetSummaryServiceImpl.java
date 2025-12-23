@@ -21,16 +21,11 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
     private final BudgetPlanRepository planRepo;
     private final TransactionLogRepository logRepo;
 
-    public BudgetSummaryServiceImpl(BudgetSummaryRepository summaryRepo,
-                                    BudgetPlanRepository planRepo) {
-        this.summaryRepo = summaryRepo;
-        this.planRepo = planRepo;
-        this.logRepo = null;
-    }
-
-    public BudgetSummaryServiceImpl(BudgetSummaryRepository summaryRepo,
-                                    BudgetPlanRepository planRepo,
-                                    TransactionLogRepository logRepo) {
+    public BudgetSummaryServiceImpl(
+            BudgetSummaryRepository summaryRepo,
+            BudgetPlanRepository planRepo,
+            TransactionLogRepository logRepo
+    ) {
         this.summaryRepo = summaryRepo;
         this.planRepo = planRepo;
         this.logRepo = logRepo;
@@ -44,14 +39,12 @@ public class BudgetSummaryServiceImpl implements BudgetSummaryService {
         double income = 0;
         double expense = 0;
 
-        if (logRepo != null) {
-            List<TransactionLog> logs = logRepo.findByUser(plan.getUser());
-            for (TransactionLog log : logs) {
-                if ("INCOME".equalsIgnoreCase(log.getCategory().getType())) {
-                    income += log.getAmount();
-                } else {
-                    expense += log.getAmount();
-                }
+        List<TransactionLog> logs = logRepo.findByUser(plan.getUser());
+        for (TransactionLog log : logs) {
+            if ("INCOME".equalsIgnoreCase(log.getCategory().getType())) {
+                income += log.getAmount();
+            } else {
+                expense += log.getAmount();
             }
         }
 

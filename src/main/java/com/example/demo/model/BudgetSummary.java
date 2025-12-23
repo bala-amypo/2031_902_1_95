@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class BudgetSummary {
@@ -14,22 +14,20 @@ public class BudgetSummary {
     private BudgetPlan budgetPlan;
 
     private Double totalIncome;
-
     private Double totalExpense;
-
     private String status;
-
     private LocalDateTime generatedAt;
 
-    public BudgetSummary() {
-    }
+    public BudgetSummary() {}
 
-    public BudgetSummary(Long id,
-                         BudgetPlan budgetPlan,
-                         double totalIncome,
-                         double totalExpense,
-                         String status,
-                         LocalDateTime generatedAt) {
+    public BudgetSummary(
+            Long id,
+            BudgetPlan budgetPlan,
+            Double totalIncome,
+            Double totalExpense,
+            String status,
+            LocalDateTime generatedAt
+    ) {
         this.id = id;
         this.budgetPlan = budgetPlan;
         this.totalIncome = totalIncome;
