@@ -2,12 +2,15 @@ package com.example.demo.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
+
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.TransactionLog;
 import com.example.demo.model.User;
 import com.example.demo.repository.TransactionLogRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.TransactionService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -43,10 +46,6 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        return transactionRepo.findByUserAndTransactionDateBetween(
-                user,
-                LocalDate.of(1900, 1, 1),
-                LocalDate.now()
-        );
+        return transactionRepo.findByUser(user);
     }
 }
