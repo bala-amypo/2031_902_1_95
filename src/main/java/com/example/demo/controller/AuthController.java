@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.dto.*;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
@@ -36,12 +39,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+
+        try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException ex) {
+            throw new RuntimeException("Invalid email or password");
+        }
 
         User user = userService.findByEmail(request.getEmail());
 
