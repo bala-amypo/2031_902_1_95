@@ -45,4 +45,18 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public boolean validateToken(String token) {
+    try {
+        getClaims(token);
+        return true;
+    } catch (Exception e) {
+        return false;
+    }
+}
+
+public String getEmail(String token) {
+    return getEmailFromToken(token);
+}
+
 }
