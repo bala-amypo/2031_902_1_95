@@ -3,10 +3,13 @@ package com.example.demo.security;
 import java.security.Key;
 import java.util.Date;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenProvider {
@@ -16,17 +19,12 @@ public class JwtTokenProvider {
 
     private static final long DEFAULT_VALIDITY = 86400000;
 
-    private Key key;
-    private long validity;
+    private final Key key;
+    private final long validity;
 
     public JwtTokenProvider() {
         this.key = Keys.hmacShaKeyFor(DEFAULT_SECRET.getBytes());
         this.validity = DEFAULT_VALIDITY;
-    }
-
-    public JwtTokenProvider(String secret, long validity) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validity = validity;
     }
 
     public String generateToken(Long userId, String email, String role) {
@@ -40,16 +38,11 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
-        return getClaims(token).get("userId", Long.class);
-    }
-
-    public String getEmailFromToken(String token) {
-        return getClaims(token).getSubject();
-    }
-
-    public String getRoleFromToken(String token) {
-        return getClaims(token).get("role", String.class);
+    public String generateToken(Authentication authentication,
+                                Long userId,
+                                String email,
+                                String role) {
+        return generateToken(userId, email, role);
     }
 
     public boolean validateToken(String token) {
@@ -62,7 +55,7 @@ public class JwtTokenProvider {
     }
 
     public String getEmail(String token) {
-        return getEmailFromToken(token);
+        return getClaims(token).getSubject();
     }
 
     private Claims getClaims(String token) {
