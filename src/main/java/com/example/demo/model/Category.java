@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
+import com.example.demo.exception.BadRequestException;
+
 @Entity
 public class Category {
 
@@ -12,7 +14,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
     private String type;
@@ -26,9 +28,11 @@ public class Category {
         this.type = type;
     }
 
+    // ✅ REQUIRED BY TEST CASE
     public void validateType() {
-        if (!TYPE_INCOME.equals(type) && !TYPE_EXPENSE.equals(type)) {
-            throw new IllegalArgumentException("Invalid category type");
+        if (type == null ||
+            (!TYPE_INCOME.equals(type) && !TYPE_EXPENSE.equals(type))) {
+            throw new BadRequestException("Invalid category type");
         }
     }
 

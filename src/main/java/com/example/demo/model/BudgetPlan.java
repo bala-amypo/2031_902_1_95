@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 
+import com.example.demo.exception.BadRequestException;
+
 @Entity
 public class BudgetPlan {
 
@@ -20,8 +22,14 @@ public class BudgetPlan {
     public BudgetPlan() {
     }
 
-    public BudgetPlan(Long id, User user, int month, int year,
-                      double incomeTarget, double expenseLimit) {
+    public BudgetPlan(
+            Long id,
+            User user,
+            int month,
+            int year,
+            double incomeTarget,
+            double expenseLimit
+    ) {
         this.id = id;
         this.user = user;
         this.month = month;
@@ -30,9 +38,10 @@ public class BudgetPlan {
         this.expenseLimit = expenseLimit;
     }
 
+    // ✅ REQUIRED BY TEST CASE
     public void validate() {
-        if (month < 1 || month > 12) {
-            throw new IllegalArgumentException("Invalid month");
+        if (month == null || month < 1 || month > 12) {
+            throw new BadRequestException("Invalid month");
         }
     }
 
