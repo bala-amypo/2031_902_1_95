@@ -33,6 +33,11 @@ public class TransactionServiceImpl implements TransactionService {
             throw new BadRequestException("Invalid amount");
         }
 
+        // ✅ REQUIRED FIX (null check FIRST)
+        if (log.getTransactionDate() == null) {
+            throw new BadRequestException("Transaction date required");
+        }
+
         if (log.getTransactionDate().isAfter(LocalDate.now())) {
             throw new BadRequestException("Future date not allowed");
         }
