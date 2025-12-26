@@ -3,6 +3,8 @@ package com.example.demo.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
+import com.example.demo.exception.BadRequestException;
+
 @Entity
 public class TransactionLog {
 
@@ -25,8 +27,14 @@ public class TransactionLog {
     public TransactionLog() {
     }
 
-    public TransactionLog(Long id, User user, Category category,
-                          double amount, String description, LocalDate date) {
+    public TransactionLog(
+            Long id,
+            User user,
+            Category category,
+            double amount,
+            String description,
+            LocalDate date
+    ) {
         this.id = id;
         this.user = user;
         this.category = category;
@@ -35,11 +43,19 @@ public class TransactionLog {
         this.transactionDate = date;
     }
 
+    // ✅ REQUIRED BY TEST CASES
     public void validate() {
+
         if (amount == null || amount <= 0) {
-            throw new IllegalArgumentException("Invalid amount");
+            throw new BadRequestException("Invalid amount");
+        }
+
+        if (transactionDate != null && transactionDate.isAfter(LocalDate.now())) {
+            throw new BadRequestException("Future date not allowed");
         }
     }
+
+    // getters & setters
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
