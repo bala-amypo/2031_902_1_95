@@ -24,4 +24,9 @@ public class SimpleHelloServlet extends HttpServlet {
 
         res.setStatus(405);
     }
+    @Override
+public String getServletInfo() {
+    return "SimpleHelloServlet for Expense Tracker";
+}
+
 }

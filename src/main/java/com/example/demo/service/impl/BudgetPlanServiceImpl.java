@@ -23,12 +23,22 @@ public class BudgetPlanServiceImpl implements BudgetPlanService {
 
     @Override
     public BudgetPlan createBudgetPlan(Long userId, BudgetPlan plan) {
+
         if (plan.getMonth() < 1 || plan.getMonth() > 12) {
             throw new BadRequestException("Invalid month");
         }
 
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
+
+        // ✅ DUPLICATE CHECK (this was missing)
+        if (budgetRepo.findByUserAndMonthAndYear(
+                user,
+                plan.getMonth(),
+                plan.getYear()
+        ).isPresent()) {
+            throw new BadRequestException("Duplicate budget plan");
+        }
 
         plan.setUser(user);
         return budgetRepo.save(plan);
