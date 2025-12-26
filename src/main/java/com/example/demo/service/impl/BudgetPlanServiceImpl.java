@@ -24,7 +24,6 @@ public class BudgetPlanServiceImpl implements BudgetPlanService {
     @Override
     public BudgetPlan createBudgetPlan(Long userId, BudgetPlan plan) {
 
-        // ✅ FIX 1: Wrap model validation exception
         try {
             if (plan.getMonth() < 1 || plan.getMonth() > 12) {
                 throw new IllegalArgumentException("Invalid month");
@@ -36,7 +35,6 @@ public class BudgetPlanServiceImpl implements BudgetPlanService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
-        // ✅ FIX 2: Duplicate budget plan check
         if (budgetRepo.findByUserAndMonthAndYear(
                 user,
                 plan.getMonth(),

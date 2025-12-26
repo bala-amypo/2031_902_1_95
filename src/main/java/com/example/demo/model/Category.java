@@ -28,7 +28,6 @@ public class Category {
         this.type = type;
     }
 
-    // ✅ REQUIRED BY TEST CASE
     public void validateType() {
         if (type == null ||
             (!TYPE_INCOME.equals(type) && !TYPE_EXPENSE.equals(type))) {
