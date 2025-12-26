@@ -21,7 +21,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category addCategory(Category category) {
 
-        // ✅ FIX: Convert model exception → BadRequestException
         try {
             category.validateType();
         } catch (IllegalArgumentException e) {
