@@ -20,9 +20,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category) {
+
+        // ✅ FIX: Convert model exception → BadRequestException
+        try {
+            category.validateType();
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
         if (categoryRepository.existsByName(category.getName())) {
             throw new BadRequestException("Category already exists");
         }
+
         return categoryRepository.save(category);
     }
 
